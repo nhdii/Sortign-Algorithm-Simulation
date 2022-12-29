@@ -6,10 +6,9 @@ import random
 root = Tk()
 root.title("Sorting Algorithms Visualization")
 root.maxsize(2000, 900)  
-# config dung de tao thuoc tinh bg cho cua so
 root.configure(bg = "#87A7FF")
 
-algo_name = StringVar()     #Stringvar(): la ham dung de tao va truy cap bien trong tkinter
+algo_name = StringVar()     #Stringvar(): là hàm dùng để truy cập biến trong Tkinter
 algo_list = ["Selection Sort", "Bubble Sort", "Insertion Sort", "Merge Sort"]
 
 speed_name = StringVar()
@@ -20,13 +19,13 @@ cre_arr_list = ["From file", "Random", "From Keyboard"]
 # Tao array
 arr = []
 
-# Ham hien thi hinh khoi array
+# Hàm tạo các hình hộp chữ nhật từ các giá trị trong arr
 def display_Array(arr, colorArray):
-    canvas.delete("all")
+    arr_canvas.delete("all")
     canvas_width = 800
     canvas_height = 400
     width_x = canvas_width / (len(arr) + 1)     #Lấy kích thước của hình khối
-    rectang_size = 20
+    rectang_size = 20     
     space = 5
     get_arr = [i for i in arr]
     for i in range(len(arr)):
@@ -36,8 +35,8 @@ def display_Array(arr, colorArray):
         y1 = canvas_height
         x2 = (x0+x1)/2
         y2 = y0 + 10
-        canvas.create_rectangle(x0, y0, x1, y1, fill=colorArray[i])
-        canvas.create_text(x2, y2, text=arr[i])
+        arr_canvas.create_rectangle(x0, y0, x1, y1, fill=colorArray[i])
+        arr_canvas.create_text(x2, y2, text=arr[i])
 
     root.update_idletasks()
 
@@ -57,7 +56,8 @@ def set_speed():
         return fast
 #endregion
 
-#region Hàm Random Array 
+#region Tạo giá trị cho Arr
+# Hàm tạo các giá trị ngẫu nhiên cho mảng
 def random_Array():
     global arr
     array_size = 14
@@ -70,9 +70,8 @@ def random_Array():
         arr.append(random_arr)
 
     display_Array(arr, ["#AE8EBB" for x in range(len(arr))])
-#endregion
 
-#region Hàm lấy Array từ file
+# Hàm lấy các giá trị trong Arr từ file
 def file_Array():
     global arr
 
@@ -85,9 +84,8 @@ def file_Array():
 
     display_Array(arr, ["#AE8EBB" for x in range(len(arr))])
     file.close()
-#endregion
 
-#region Hàm nhập giá trị Array từ bàn phím
+# Hàm nhập giá cho Arr từ bàn phím
 def add_value_arr():
     global arr
     value = input_arr.get()
@@ -98,49 +96,62 @@ def input_Arr():
     global input_arr
     window = Tk()
     window.maxsize(1000, 500)
-    lb1 = Label(window, text="Nhập các giá trị cách nhau bởi khoảng trắng!")
-    lb1.grid(row=0, column=1, padx=10, pady=5)
-    lb2 = Label(window, text="Values: ")
-    lb2.grid(row=1, column=0, padx=10, pady=5)
+    lb4 = Label(window, text="Nhập các giá trị cách nhau bởi khoảng trắng!")
+    lb4.grid(row=0, column=1, padx=10, pady=5)
+    lb5 = Label(window, text="Values: ")
+    lb5.grid(row=1, column=0, padx=10, pady=5)
 
     input_arr = Entry(window, width=50)
     input_arr.grid(row=1, column=1, padx=10, pady=5)
     input_arr.focus()
 
-    btn_add_value = Button(window, text="Add", command = add_value_arr)
-    btn_add_value.grid(row=1, column=2, padx=10)
+    add_value_btn = Button(window, text="Add", command = add_value_arr)
+    add_value_btn.grid(row=1, column=2, padx=10)
 #endregion
 
+# Hàm lấy giá trị từ combobox và trả về phương thức tạo giá trị cho Arr
+def create_Array():
+    if cre_arr_comboBox.get() == "From file":
+        file_Array()
+    elif cre_arr_comboBox.get() == "Random":
+        random_Array()
+    elif cre_arr_comboBox.get() == "From Keyboard":
+        input_Arr()
+
+#region Hàm hiển thị mã giả của các thuật toán
 def show_code():
     if algo_comboBox.get() == "Selection Sort":
-        display_code.delete(0, END)
-        algo_code_list = ['for i = 0 to n - 1:',
+        code_lsb.delete(0, END)
+        algo_code = ['for i = 0 to n - 1:',
                           '    set min_idx = i',
                           '    for j = i + 1 to n:',
                           '        if (arr[min_idx] > arr[j]) then:',
                           '            set min_idx = j',
                           'Swap arr[i], arr[j]']
-        [display_code.insert(END, item) for item in algo_code_list]
+        [code_lsb.insert(END, item) for item in algo_code]
+
     elif algo_comboBox.get() == "Bubble Sort":
-        display_code.delete(0, END)
-        algo_code_list = ['for i to n:',
+        code_lsb.delete(0, END)
+        algo_code = ['for i to n:',
                           '    for j = 0 to n-i-1:',
                           '        if (arr[j] > arr[j+1]) then:',
                           '            Swap arr[j], arr[j+1]']
-        [display_code.insert(END, item) for item in algo_code_list]
+        [code_lsb.insert(END, item) for item in algo_code]
+
     elif algo_comboBox.get() == "Insertion Sort":
-        display_code.delete(0, END)
-        algo_code_list = ['for i = 1 to n:',
+        code_lsb.delete(0, END)
+        algo_code = ['for i = 1 to n:',
                           '    set key = arr[i]',
                           '    set j = i - 1',
                           '    while (j >= 0 and key < arr[j]',
                           '        set arr[j+1] = arr[j]',
                           '        j -= 1',
                           '    set arr[j+1] = key']   
-        [display_code.insert(END, item) for item in algo_code_list]
+        [code_lsb.insert(END, item) for item in algo_code]
+
     elif algo_comboBox.get() == "Merge Sort":
-        display_code.delete(0, END)
-        algo_code_list = ['mergesort(arr[], l, r',
+        code_lsb.delete(0, END)
+        algo_code = ['mergesort(arr[], l, r',
                           'if r > l',
                           '    1. Tìm chỉ số nằm giữa mảng để chia mảng thành 2 nửa:',
                           '        middle m = (l+r)/2',
@@ -150,19 +161,12 @@ def show_code():
                           '        mergeSort(arr, m+1, r)',
                           '    4. Gộp 2 nửa mảng đã sắp xếp ở (2) và (3):',
                           '        merge(arr, 1, m, r)']
-        [display_code.insert(END, item) for item in algo_code_list]
-        
-def create_Array():
-    if cre_arr_comboBox.get() == "From file":
-        file_Array()
-    elif cre_arr_comboBox.get() == "Random":
-        random_Array()
-    elif cre_arr_comboBox.get() == "From Keyboard":
-        input_Arr()
+        [code_lsb.insert(END, item) for item in algo_code]
+#endregion
 
-
-# function merge sort algorithm
-def merge(arr, begin, mid, end):
+#region Các hàm gọi hàm sắp xếp
+# Hàm thuật toán Merge Sort sắp xếp theo chiều tăng dần
+def merge_asc(arr, begin, mid, end):
     p = begin
     q = mid + 1
     temp_Array = []
@@ -184,18 +188,18 @@ def merge(arr, begin, mid, end):
         arr[begin] = temp_Array[p]
         begin += 1
 
-def merge_sort(arr, begin, end, display_Array, tym):
+def merge_sort_asc(arr, begin, end, display_Array, tym):
     if begin < end:
         mid = int((begin + end)/2)
-        merge_sort(arr, begin, mid, display_Array, tym)
-        merge_sort(arr, mid + 1, end, display_Array, tym)
-        merge(arr, begin, mid, end)
+        merge_sort_asc(arr, begin, mid, display_Array, tym)
+        merge_sort_asc(arr, mid + 1, end, display_Array, tym)
+        merge_asc(arr, begin, mid, end)
         display_Array(arr, ["green" if x >= begin and x < mid else "yellow" if x == mid  else "red" if x > mid and x <=end else "#AE8EBB" for x in range(len(arr))])
         time.sleep(tym)
 
     display_Array(arr, ["#01D38E" for x in range(len(arr))])
 
-# Ham Merge Sort Des
+# Hàm Sắp xếp giảm dần của thuật toán Merge Sort
 def merge_des(arr, begin, mid, end):
     p = begin
     q = mid + 1
@@ -228,7 +232,7 @@ def merge_sort_des(arr, begin, end, display_Array, tym):
         time.sleep(tym)
     display_Array(arr, ["#01D38E" for x in range(len(arr))])
     
-# Ham sap xep tang dan
+# Hàm sắp xếp tăng dần
 def sort_Asc():
     tym = set_speed()
     #Bubble Sort algorithm
@@ -242,7 +246,6 @@ def sort_Asc():
                     time.sleep(tym)
         display_Array(arr, ["#01D38E" for x in range(len(arr))])
         
-
     # Selection sort algorithm
     elif algo_comboBox.get()=="Selection Sort":
         show_code()
@@ -273,9 +276,9 @@ def sort_Asc():
     # Merge sort algorithm
     elif algo_comboBox.get() == "Merge Sort":
         show_code()
-        merge_sort(arr, 0, len(arr)-1, display_Array, tym)
+        merge_sort_asc(arr, 0, len(arr)-1, display_Array, tym)
 
-# Ham sap xep giam dan
+# Hàm sắp xếp giảm dần
 def sort_Des():
     tym = set_speed()
     #Bubble Sort algorithm
@@ -320,58 +323,58 @@ def sort_Des():
     elif algo_comboBox.get() == "Merge Sort":
         show_code()
         merge_sort_des(arr, 0, len(arr)-1, display_Array, tym)
-       
+#endregion
 
-# Tao widget chua cac widget lua chon thuat toan va toc do
-
+#region Cài đặt giao diện
+# Tạo widget chứa các widget label, button, combobox
 display_window = Frame(root, width=300, height=200, bg="#242A53")
 display_window.grid(row=0, column=0, padx=25, pady=50, sticky=NW)
 
-# Hien thi danh sach lua chon cac thuat toan co nhan la Algorithm
-label1 = Label(display_window, text="Algorithm: ", bg="white")
-label1.grid(row=0, column=0, padx=10, pady=5, sticky=W)
+# Label hiển thị dòng text "Algorithm: "
+lb1 = Label(display_window, text="Algorithm: ", bg="white")
+lb1.grid(row=0, column=0, padx=10, pady=5, sticky=W)
 
-# Combobox la hop chon 
+# Combobox hiển thị các thuật toán sắp xếp 
 algo_comboBox = ttk.Combobox(display_window, textvariable=algo_name, values = algo_list)
 algo_comboBox.grid(row=0, column=1, padx=5, pady=5)
 algo_comboBox.current(0)
 
-# Hien thi danh sach lua chon toc do hien thi sap xep
-label2 = Label(display_window, text="Sorting Speed: ", bg="white")
-label2.grid(row=1, column=0, padx=10, pady=5, sticky=W)
+# Label hiển thị dòng text "Sorting Speed: " 
+lb2 = Label(display_window, text="Sorting Speed: ", bg="white")
+lb2.grid(row=1, column=0, padx=10, pady=5, sticky=W)
+
+# Combobox hiển thị các lựa chọn tốc độ sắp xếp
 speed_comboBox = ttk.Combobox(display_window, textvariable=speed_name, values=speed_list)
 speed_comboBox.grid(row=1, column=1, padx=5, pady=5)
 speed_comboBox.current(0)
 
-# Label danh sach create array
-label3 = Label(display_window, text = "Choose Array: ", bg = "white")
-label3.grid(row=2, column=0, padx=10, pady=5, sticky=W)
+# Label hiển thị đoạn text "Choose Array: "
+lb3 = Label(display_window, text = "Choose Array: ", bg = "white")
+lb3.grid(row=2, column=0, padx=10, pady=5, sticky=W)
+
+# Combobox hiển thị các lựa chọn tạo mảng
 cre_arr_comboBox = ttk.Combobox(display_window, textvariable=cre_arr, values=cre_arr_list)
 cre_arr_comboBox.grid(row=2, column=1, padx=5, pady=5)
 cre_arr_comboBox.current(0)
 
-# Button Create Array
-button1 = Button(display_window, text="Create Array", command = create_Array, bg="white")
-button1.grid(row=0, column=2, pady=5)
+# Button dùng để tạo mảng
+btn_cre_arr = Button(display_window, text="Create Array", command = create_Array, bg="white")
+btn_cre_arr.grid(row=0, column=2, pady=5)
 
-# Button Sort Array
-button2 = Button(display_window, text="Sort Ascending", command= sort_Asc, bg="white")
-button2.grid(row=1, column=2, padx=5, pady=5)
-button2 = Button(display_window, text="Sort descending", command= sort_Des, bg="white")
-button2.grid(row=2, column=2, padx=5, pady=5)
+# Button sắp xếp tăng, giảm
+sort_asc_btn = Button(display_window, text="Sort Ascending", command= sort_Asc, bg="white")
+sort_asc_btn.grid(row=1, column=2, padx=5, pady=5)
+sort_des_btn = Button(display_window, text="Sort descending", command= sort_Des, bg="white")
+sort_des_btn.grid(row=2, column=2, padx=5, pady=5)
 
+#Tạo widget chứa mã giả thuật toán 
+code_lsb = Listbox(root, width=40, height=9, font=("Times", 13))
+code_lsb.grid(row=0, column=0, padx=20, pady=10, sticky=E)      
 
-# display_Code = Frame(root, width=400, height=200, bg="white")
-# display_Code.grid(row=0, column=0, padx=25, pady=5, sticky=E)
+# Tạo Canvas chứa widget tạo các hình khối của các giá trị trong mảng
+arr_canvas = Canvas(root, width=800, height=400, bg="seashell")
+arr_canvas.grid(row=5, column=0, padx=10, pady=5)
 
-
-display = Canvas(root, width=350, height=200, bg="white")
-display.grid(row=0, column=0, padx=25, pady=5, sticky=E)
-display_code = Listbox(display, width=40, height=7, font=("Times", 13))
-display_code.grid(row=0, column=0, padx=10, pady=10)      
-
-# Tien ich Canvas dung de tao widget hien thi cac hinh khoi Array
-canvas = Canvas(root, width=800, height=400, bg="seashell")
-canvas.grid(row=5, column=0, padx=10, pady=5)
+#endregion
 
 root.mainloop()
